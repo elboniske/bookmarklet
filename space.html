@@ -1,0 +1,86 @@
+<html>
+  <head>
+    <title>Space Invaders Game</title>
+  </head>
+  <body>
+    <canvas id="gameCanvas" width="500" height="500"></canvas>
+    <script>
+      const canvas = document.getElementById("gameCanvas");
+      const ctx = canvas.getContext("2d");
+
+      // Constants for the game
+      const playerWidth = 20;
+      const playerHeight = 20;
+      const playerSpeed = 5;
+      const bulletWidth = 10;
+      const bulletHeight = 10;
+      const bulletSpeed = 10;
+
+      // Variables for the game
+      let playerX = (canvas.width - playerWidth) / 2;
+      let playerY = canvas.height - playerHeight - 10;
+      let bullets = [];
+
+      // Key state variables
+      let rightPressed = false;
+      let leftPressed = false;
+      let spacePressed = false;
+
+      // Event listeners for key events
+      document.addEventListener("keydown", keyDownHandler, false);
+      document.addEventListener("keyup", keyUpHandler, false);
+
+      // Function to handle key down events
+      function keyDownHandler(e) {
+        if (e.key == "Right" || e.key == "ArrowRight") {
+          rightPressed = true;
+        } else if (e.key == "Left" || e.key == "ArrowLeft") {
+          leftPressed = true;
+        } else if (e.key == " ") {
+          spacePressed = true;
+        }
+      }
+
+      // Function to handle key up events
+      function keyUpHandler(e) {
+        if (e.key == "Right" || e.key == "ArrowRight") {
+          rightPressed = false;
+        } else if (e.key == "Left" || e.key == "ArrowLeft") {
+          leftPressed = false;
+        } else if (e.key == " ") {
+          spacePressed = false;
+        }
+      }
+
+      // Function to update the player position based on the arrow keys
+      function updatePlayer() {
+        if (rightPressed && playerX < canvas.width - playerWidth) {
+          playerX += playerSpeed;
+        } else if (leftPressed && playerX > 0) {
+          playerX -= playerSpeed;
+        }
+
+        // Add a new bullet when space is pressed
+        if (spacePressed) {
+          bullets.push({ x: playerX + playerWidth / 2, y: playerY });
+          spacePressed = false;
+        }
+      }
+
+      // Function to update the bullet positions
+      function updateBullets() {
+        for (let i = 0; i < bullets.length; i++) {
+          bullets[i].y -= bulletSpeed;
+
+          // Remove the bullet when it goes off the screen
+          if (bullets[i].y < 0) {
+            bullets.splice(i, 1);
+          }
+        }
+      }
+
+      // Function to draw everything on the canvas
+      function draw() {
+        // Clear the canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
